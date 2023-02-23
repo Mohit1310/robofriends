@@ -1,3 +1,5 @@
+// adding robots data
+
 export const robots = [
   {
     id: 1,
