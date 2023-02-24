@@ -1,16 +1,23 @@
 import React, { Component } from "react";
 import CardList from "./CardList";
-import { robots } from "./robots";
 import SearchBox from "./SearchBox";
-import './App.css'
+import "./App.css";
 
 class App extends Component {
+  // smart component
   constructor() {
     super();
     this.state = {
-      robots: robots,
+      robots: [],
       searchfield: "",
     };
+  }
+
+  componentDidMount() {
+    // getting response from api
+    fetch("https://jsonplaceholder.typicode.com/users")
+      .then((response) => response.json())
+      .then((users) => this.setState({ robots: users }));
   }
 
   onSearchChange = (event) => {
@@ -23,13 +30,18 @@ class App extends Component {
         .toLowerCase()
         .includes(this.state.searchfield.toLowerCase());
     });
-    return (
-      <div className="tc">
-        <h1 className="f1">Robofriends</h1>
-        <SearchBox searchChange={this.onSearchChange} />
-        <CardList robots={filteredRobots} />
-      </div>
-    );
+    if (this.state.robots.length === 0) {
+      // if api response time is too much then this will be displayed
+      return <h1 className="tc">Loading...</h1>;
+    } else {
+      return (
+        <div className="tc">
+          <h1 className="f1">Robofriends</h1>
+          <SearchBox searchChange={this.onSearchChange} />
+          <CardList robots={filteredRobots} />
+        </div>
+      );
+    }
   }
 }
 
